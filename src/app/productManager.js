@@ -1,7 +1,7 @@
 import fs from "fs";
 
 class ProductManager {
-  #path = "./prods.json";
+  #path = "./src/server/prods.json";
   idAcum = 0;
   constructor(path) {
     path = this.#path;
@@ -10,7 +10,6 @@ class ProductManager {
   async getProducts() {
     try {
       const products = await fs.promises.readFile(this.#path, "utf-8");
-      console.log("pase por getproducts");
       return JSON.parse(products);
       
     } catch (error) {
@@ -52,6 +51,8 @@ class ProductManager {
         price,
         thumbnail,
         stock,
+        status,
+        category,
       };
       products = [...products, newProduct];
       await fs.promises.writeFile(this.#path, JSON.stringify(products));
