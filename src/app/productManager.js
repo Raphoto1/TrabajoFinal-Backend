@@ -113,7 +113,7 @@ class ProductManager {
       console.log("falta Información");
     } else {
       const products = await this.getProducts();
-      const chkId = this.chkProdsById(products, id);
+      const chkId = await this.chkProdsById(products, id);
       if (chkId) {
         console.log("se actualizan los datos");
         switch (keyToUpdate) {
