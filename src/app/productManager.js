@@ -7,25 +7,24 @@ class ProductManager {
     path = this.#path;
   }
 
-async idOrganizer(){
-  const products = await this.getProducts();
-  let chkIdNum = await products.map(prods => prods.id);
-  let highId = await Math.max(...chkIdNum);
-  console.log(highId);
-  if (highId === -Infinity){
-    this.idAcum = 0
-    return this.idAcum
-  } else{
-    console.log("pasa por adicion");
-    return highId+1
+  async idOrganizer() {
+    const products = await this.getProducts();
+    let chkIdNum = await products.map((prods) => prods.id);
+    let highId = await Math.max(...chkIdNum);
+    console.log(highId);
+    if (highId === -Infinity) {
+      this.idAcum = 0;
+      return this.idAcum;
+    } else {
+      console.log("pasa por adicion");
+      return highId + 1;
+    }
   }
-}
 
   async getProducts() {
     try {
       const products = await fs.promises.readFile(this.#path, "utf-8");
       return JSON.parse(products);
-      
     } catch (error) {
       return [];
     }
@@ -41,9 +40,27 @@ async idOrganizer(){
     return check;
   }
 
-  async addProduct(code, title, description, price, thumbnail, stock, status, category) {
+  async addProduct(
+    code,
+    title,
+    description,
+    price,
+    thumbnail,
+    stock,
+    status,
+    category
+  ) {
     //revisar que si esten todos los datos
-    if (code && title && description && price && thumbnail && stock && status && category) {
+    if (
+      code &&
+      title &&
+      description &&
+      price &&
+      thumbnail &&
+      stock &&
+      status &&
+      category
+    ) {
       console.log("info completa gracias");
     } else {
       console.log(
@@ -63,7 +80,7 @@ async idOrganizer(){
         title,
         description,
         price,
-        thumbnail: [],
+        thumbnail,
         stock,
         status: true,
         category,

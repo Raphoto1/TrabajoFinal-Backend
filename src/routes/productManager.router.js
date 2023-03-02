@@ -28,8 +28,6 @@ productManagerRouter.get("/:id", async (req,res) => {
 })
 
 //post carga de info code,
-        
-
 productManagerRouter.post("/add", async(req, res) => {
     const code = await req.query.code;
     const title = await req.query.title;
@@ -51,6 +49,12 @@ productManagerRouter.post("/update", async (req,res) => {
     const data = await req.query.data;
     // const result = prodIdUp + value + data;
     const result = await item.updateProdById(prodIdUp,value,data);
+    await res.send(result);
+})
+
+productManagerRouter.get("/delete/:id", async (req,res) =>{
+    const prodId = await Number(req.params.id);
+    const result = await item.deleteProdById(prodId);
     await res.send(result);
 })
 
