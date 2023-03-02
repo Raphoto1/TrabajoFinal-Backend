@@ -7,6 +7,20 @@ class ProductManager {
     path = this.#path;
   }
 
+async idOrganizer(){
+  const products = await this.getProducts();
+  let chkIdNum = await products.map(prods => prods.id);
+  let highId = await Math.max(...chkIdNum);
+  console.log(highId);
+  if (highId === -Infinity){
+    this.idAcum = 0
+    return this.idAcum
+  } else{
+    console.log("pasa por adicion");
+    return highId+1
+  }
+}
+
   async getProducts() {
     try {
       const products = await fs.promises.readFile(this.#path, "utf-8");
@@ -27,9 +41,9 @@ class ProductManager {
     return check;
   }
 
-  async addProduct(code, title, description, price, thumbnail, stock) {
+  async addProduct(code, title, description, price, thumbnail, stock, status, category) {
     //revisar que si esten todos los datos
-    if (code && title && description && price && thumbnail && stock) {
+    if (code && title && description && price && thumbnail && stock && status && category) {
       console.log("info completa gracias");
     } else {
       console.log(
@@ -44,14 +58,14 @@ class ProductManager {
     if (!chk) {
       console.log(`no existe codigo: ${code} ===> SE CREARA NUEVO PRODUCTO`);
       const newProduct = {
-        id: this.idAcum++,
+        id: await this.idOrganizer(),
         code,
         title,
         description,
         price,
-        thumbnail,
+        thumbnail: [],
         stock,
-        status,
+        status: true,
         category,
       };
       products = [...products, newProduct];
