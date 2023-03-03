@@ -5,13 +5,17 @@ const cartManagerRouter = Router();
 const cart = new CartManager();
 
 cartManagerRouter.get("/", async (req, res) => {
-    const prodsInCart = await cart.getCarts();
-    await res.send(prodsInCart);
+    const{cId} = req.query;
+    const carts = await cart.getCarts(cId);
+    console.log(carts);
+    await res.send(carts);
 })
 
 cartManagerRouter.get("/:cId", async (req,res) =>{
-    const prodId = await Number(req.params.cId);
-    const result = await cart.getCarts(prodId)
+    const cartId = await Number(req.params.cId);
+    console.log(cartId);
+    const result = await cart.getCarts(cartId);
+    await res.send(result)
 })
 
 cartManagerRouter.post("/", async (req,res) =>{

@@ -10,16 +10,16 @@ class CartManager {
   constructor(path) {
     path = this.#path;
   }
-//creamos carrito
-async createCart(){
-  let carts = await this.getCarts();
-  const newCart = {
-    cId: await this.idOrganizer(),
-    products: [],
-  };
-  carts = [...carts, newCart];
-await fs.promises.writeFile(this.#path, JSON.stringify(carts));
-}
+  //creamos carrito
+  async createCart() {
+    let carts = await this.getCarts();
+    const newCart = {
+      cId: await this.idOrganizer(),
+      products: [],
+    };
+    carts = [...carts, newCart];
+    await fs.promises.writeFile(this.#path, JSON.stringify(carts));
+  }
 
   async idOrganizer() {
     const carts = await this.getCarts();
@@ -33,10 +33,21 @@ await fs.promises.writeFile(this.#path, JSON.stringify(carts));
     }
   }
 
-  async getCarts() {
+  async getCarts(cId) {
     try {
-      const prodsInCart = await fs.promises.readFile(this.#path, "utf-8");
+      
+      if (cId) {
+        const cartId = Number(cId)
+        console.log("estoy en find");
+        const carts = await fs.promises.readFile(this.#path, "utf-8");
+        const cartsJson = await JSON.parse(carts);
+        const filteredCart = await cartsJson.find(cart => cart.cId === cartId);
+        return filteredCart;
+      } else {
+        const prodsInCart = await fs.promises.readFile(this.#path, "utf-8");
       return JSON.parse(prodsInCart);
+      }
+      
     } catch (error) {
       return [];
     }
@@ -56,7 +67,7 @@ await fs.promises.writeFile(this.#path, JSON.stringify(carts));
         products: [],
       };
       carts = [...carts, newCart];
-    await fs.promises.writeFile(this.#path, JSON.stringify(carts));
+      await fs.promises.writeFile(this.#path, JSON.stringify(carts));
     } else {
       const highId = await this.idOrganizer();
       const newCart = {
@@ -64,47 +75,45 @@ await fs.promises.writeFile(this.#path, JSON.stringify(carts));
         products: [],
       };
       carts = [...carts, newCart];
-      await fs.promises.writeFile(this.#path, JSON.stringify(carts));  
+      await fs.promises.writeFile(this.#path, JSON.stringify(carts));
     }
   }
 
-  async addProductToCart(cId, pId){
+  async addProductToCart(cId, pId) {}
 
-  }
+  //   async addProductToCart(cId, pId) {
+  //     const carts = await this.getCarts();
+  //     const chkCart = await this.chkCartById(carts, cId);
+  //     if (!chkCart) {
+  //       await this.cartOrganizer();
+  //       let newCart = await this.getCarts();
+  //       const findProduct = newCart.find((cart) => (card.cId = cId))
+  //       // const findProduct = await newCart.findIndex((cart) => (cart.cId = 1));
+  //       // if (findProduct) {
+  //       //   newCart[findProduct].products = {
+  //       //       id: pId,
+  //       //       quantity: 1,
+  //       //     };
+  //       // }
+  //       console.log(findProduct);
+  // cartsUpdated = [...newCart]
 
-//   async addProductToCart(cId, pId) {
-//     const carts = await this.getCarts();
-//     const chkCart = await this.chkCartById(carts, cId);
-//     if (!chkCart) {
-//       await this.cartOrganizer();
-//       let newCart = await this.getCarts();
-//       const findProduct = newCart.find((cart) => (card.cId = cId))
-//       // const findProduct = await newCart.findIndex((cart) => (cart.cId = 1));
-//       // if (findProduct) {
-//       //   newCart[findProduct].products = {
-//       //       id: pId,
-//       //       quantity: 1,
-//       //     };
-//       // }
-//       console.log(findProduct);
-// cartsUpdated = [...newCart]
-       
-//       await fs.promises.writeFile(this.#path, JSON.stringify(cartsUpdated));
-//       return findProduct;
-//     } else {
-//       console.log("otro lado");
-//       const cartToUpdate = carts.find((cart) =>
-//         (cart.cId = cId)
-//           ? (cart.products = {
-//               id: pId,
-//               quantity: 1,
-//             })
-//           : console.log("no existe el carrito cone se id")
-//       );
-//       console.log(cartToUpdate);
-//       const cartsToAdd = await this.getCarts();
-//     }
-//   }
+  //       await fs.promises.writeFile(this.#path, JSON.stringify(cartsUpdated));
+  //       return findProduct;
+  //     } else {
+  //       console.log("otro lado");
+  //       const cartToUpdate = carts.find((cart) =>
+  //         (cart.cId = cId)
+  //           ? (cart.products = {
+  //               id: pId,
+  //               quantity: 1,
+  //             })
+  //           : console.log("no existe el carrito cone se id")
+  //       );
+  //       console.log(cartToUpdate);
+  //       const cartsToAdd = await this.getCarts();
+  //     }
+  //   }
 }
 
 export default CartManager;
