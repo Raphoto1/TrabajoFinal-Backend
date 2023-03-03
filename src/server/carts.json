@@ -1,1 +1,1 @@
-[{"cId":1,"products":[]},{"cId":2,"products":[]},{"cId":3,"products":[]}]
+[{"cId":3,"products":[]},{"cId":1,"products":[{"pId":2,"quantity":1},{"pId":2,"quantity":1}]},{"cId":2,"products":[{"pId":2,"quantity":1},{"pId":2,"quantity":1}]},{"cId":4,"products":[{"pId":2,"quantity":1}]}]
