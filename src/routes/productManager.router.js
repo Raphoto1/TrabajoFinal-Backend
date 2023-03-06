@@ -29,12 +29,10 @@ productManagerRouter.get("/:id", async (req,res) => {
 
 //post carga de info code,
 
-productManagerRouter.post("/addTest", (req, res) => {
-    const {code} = req.body
-    // const code = req.params.code;
-    const newCode = {code};
-    const test = console.log(newCode);
-     res.send(test)
+productManagerRouter.post("/addTest", async(req, res) => {
+    const code = Number(req.query.code);
+    const test = console.log(code);
+    await res.send(test)
 })
 
 productManagerRouter.post("/add", async(req, res) => {
