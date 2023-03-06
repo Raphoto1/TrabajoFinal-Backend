@@ -28,18 +28,27 @@ productManagerRouter.get("/:id", async (req,res) => {
 })
 
 //post carga de info code,
+
+productManagerRouter.post("/addTest", (req, res) => {
+    const {code} = req.body
+    // const code = req.params.code;
+    const newCode = {code};
+    const test = console.log(newCode);
+     res.send(test)
+})
+
 productManagerRouter.post("/add", async(req, res) => {
-    const code = await req.query.code;
+    const code = Number(req.query.code);
     const title = await req.query.title;
     const description = await req.query.description;
     const price = await Number(req.query.price);
-    const thumbnail = await req.query.thumbnail;
+    // const thumbnail = await req.query.thumbnail;
     const stock = await Number(req.query.stock);
-    const status = await req.query.status;
+    // const status = await req.query.status;
     const category = await req.query.category;
-    const test = console.log(code+title+description+price+thumbnail
-        +stock+status+category);
-    const result = await item.addProduct(code,title,description,price,thumbnail,stock,status,category);
+    const test = console.log(code+title+description+price
+        +stock+category);
+    // const result = await item.addProduct(code,title,description,price,stock,category);
     await res.send(test)
 })
 

@@ -1,1 +1,35 @@
-[{"id":0,"code":"1","title":"carro","description":"bla bla bla","price":2000,"thumbnail":[],"stock":5,"status":true,"category":"autos"},{"id":3,"code":"4","title":"carro","description":"bla bla bla","price":2000,"thumbnail":"[{./img/img1.jpg},{./img/img2.jpg}]","stock":5,"status":true,"category":"autos"}]
+[
+  {
+    "id": 0,
+    "code": "1",
+    "title": "carro",
+    "description": "bla bla bla",
+    "price": 2000,
+    "thumbnail": [],
+    "stock": 5,
+    "status": true,
+    "category": "autos"
+  },
+  {
+    "id": 3,
+    "code": "4",
+    "title": "carro",
+    "description": "bla bla bla",
+    "price": 2000,
+    "thumbnail": "[{./img/img1.jpg},{./img/img2.jpg}]",
+    "stock": 5,
+    "status": true,
+    "category": "autos"
+  },
+  {
+    "id": 5,
+    "code": 4,
+    "title": "carro",
+    "description": "bla bla bla",
+    "price": 2000,
+    "thumbnail": [],
+    "stock": 5,
+    "status": true,
+    "category": "autos"
+  }
+]

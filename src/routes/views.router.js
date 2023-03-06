@@ -15,4 +15,5 @@ viewer.get('/realTime', (req, res) => {
     res.render('real_time_products');
 });
 
+
 export default viewer;

@@ -45,22 +45,13 @@ class ProductManager {
     title,
     description,
     price,
-    thumbnail,
+    // thumbnail,
     stock,
-    status,
+    // status,
     category
   ) {
     //revisar que si esten todos los datos
-    if (
-      code &&
-      title &&
-      description &&
-      price &&
-      thumbnail &&
-      stock &&
-      status &&
-      category
-    ) {
+    if (code && title && description && price && stock && category) {
       console.log("info completa gracias");
     } else {
       console.log(
@@ -80,7 +71,7 @@ class ProductManager {
         title,
         description,
         price,
-        thumbnail,
+        thumbnail: [],
         stock,
         status: true,
         category,

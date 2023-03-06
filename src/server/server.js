@@ -2,10 +2,12 @@ import express from "express";
 import productManagerRouter from "../routes/productManager.router.js";
 import cartManagerRouter from "../routes/cartManager.router.js"
 import __dirname from "./utils.js";
-import { engine } from "express-handlebars";
+import { engine} from "express-handlebars";
+import { Server } from "socket.io";
 import viewer from "../routes/views.router.js";
 
 const app = express();
+// app.use(urlencoded({ extended: true }));
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -13,7 +15,7 @@ app.set('views', __dirname + "/../views");
 
 app.use(express.json());
 app.use(express.static(__dirname + "../../public"));
-
+//viewer route
 app.use("/", viewer);
 
 //products route
