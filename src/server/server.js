@@ -1,4 +1,4 @@
-import express from "express";
+import express, {urlencoded} from "express";
 import productManagerRouter from "../routes/productManager.router.js";
 import cartManagerRouter from "../routes/cartManager.router.js"
 import __dirname from "./utils.js";
@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 import viewer from "../routes/views.router.js";
 
 const app = express();
-// app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true }));
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
