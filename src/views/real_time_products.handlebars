@@ -33,5 +33,14 @@
   </div>
   <div id="mostrar">
     <h2>Productos actualizados</h2>
+    <div id="prodsList">
+        <ul>
+            {{#each prods}}
+                <li>{{title}}, {{id}}, {{price}}</li>
+            {{/each}}
+        </ul>
+    </div>
   </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

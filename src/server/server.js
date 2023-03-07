@@ -14,17 +14,32 @@ app.set('view engine', 'handlebars');
 app.set('views', __dirname + "/../views");
 
 app.use(express.json());
-app.use(express.static(__dirname + "../../public"));
+app.use(express.static(__dirname + "/../../public"));
 //viewer route
 app.use("/", viewer);
 
 //products route
 app.use("/api/products", productManagerRouter);
 //cart route
-app.use("/api/cart", cartManagerRouter)
+app.use("/api/cart", cartManagerRouter);
+
+//call de io
+app.use((req,res, next) =>{
+    req.socketServer = socketServer;
+    next();
+})
+
 //escucha
-app.listen(8080, () => {
+const httpServer = app.listen(8080, () => {
 console.log("listening 8080");
+});
+
+
+const socketServer = new Server(httpServer);
+//listener se socket
+socketServer.on("connection", (socket)=>{
+    console.log("nuevo cliente conectado");
+    socket.emit("productList", "mensaje desde server")
 })
 
 //get products

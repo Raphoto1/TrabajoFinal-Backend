@@ -48,6 +48,7 @@ productManagerRouter.post("/add", async(req, res) => {
     const test = console.log(code+title+description+price
         +stock+category);
     const result = await item.addProduct(code,title,description,price,stock,category);
+    req.socketServer.emit("productList", "se actualizo un producto");
     await res.send(test)
 })
 
