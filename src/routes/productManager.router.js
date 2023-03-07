@@ -36,7 +36,7 @@ productManagerRouter.post("/addTest", async(req, res) => {
     await res.send(test)
 })
 
-productManagerRouter.post("/add", async(req, res) => {
+productManagerRouter.post("/add", async(req, res, next) => {
     const code = Number(req.body.code);
     const title = await req.body.title;
     const description = await req.body.description;
@@ -47,8 +47,10 @@ productManagerRouter.post("/add", async(req, res) => {
     const category = await req.body.category;
     const test = console.log(code+title+description+price
         +stock+category);
-    const result = await item.addProduct(code,title,description,price,stock,category);
-    req.socketServer.emit("productList", "se actualizo un producto");
+    //const result = await item.addProduct(code,title,description,price,stock,category);
+    // socketServer.emit("productList", "se actualizo un producto");
+    const enviarProds = await item.getProducts()
+    next();
     await res.send(test)
 })
 
