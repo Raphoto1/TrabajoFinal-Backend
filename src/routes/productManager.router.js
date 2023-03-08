@@ -36,7 +36,7 @@ productManagerRouter.post("/addTest", async(req, res) => {
     await res.send(test)
 })
 
-productManagerRouter.post("/add", async(req, res, nextToWork) => {
+productManagerRouter.post("/add", async(req, res, midSocket) => {
     const code = Number(req.body.code);
     const title = await req.body.title;
     const description = await req.body.description;
@@ -48,10 +48,9 @@ productManagerRouter.post("/add", async(req, res, nextToWork) => {
     const test = console.log(code+title+description+price
         +stock+category);
     const result = await item.addProduct(code,title,description,price,stock,category);
-    
     const enviarProds = await item.getProducts()
     req.enviarProds = enviarProds;
-    nextToWork();
+    midSocket();
     await res.send(test)
 })
 

@@ -24,11 +24,11 @@ app.use("/api/products", productManagerRouter);
 app.use("/api/cart", cartManagerRouter);
 
 //call de io
-app.use((req,res, nextToWork) =>{
+app.use((req,res, midSocket) =>{
      const data = req.enviarProds;
     req.socketServer = socketServer;
     socketServer.emit("productList", data);
-    nextToWork();
+    midSocket();
 })
 
 //escucha
@@ -41,7 +41,7 @@ const socketServer = new Server(httpServer);
 //listener se socket
 socketServer.on("connection", (socket)=>{
     console.log("nuevo cliente conectado");
-    //socket.emit("productList", "mensaje desde server");
+    socket.emit("productList", "mensaje desde server");
 })
 
 //get products

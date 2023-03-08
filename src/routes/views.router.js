@@ -11,7 +11,7 @@ viewer.get("/", async (req,res) =>{
     res.render("index", {prods});
 })
 
-viewer.get('/realTime', (req, res) => {
+viewer.get('/real-time-products', (req, res) => {
     res.render('real_time_products');
 });
 

@@ -3,12 +3,12 @@
     <div id="prodslist">
         <ul>
             {{#each prods}}
-                <li>{{title}}, {{id}}, {{price}}</li>
+                <li>Titulo:{{title}}, Id:{{id}}, Precio{{price}}, Stock:{{stock}}</li>
             {{/each}}
         </ul>
     </div>
-    <h2>Agregar productos</h2>
-    <h2>productos actualizados en tiempo real</h2>
+    <a href="http://localhost:8080/real-time-products">
+        <h2>Agregar productos</h2>
+        <h2>productos actualizados en tiempo real</h2>
+    </a>
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>

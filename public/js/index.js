@@ -5,12 +5,15 @@ const socket = io();
 // })
 
 const productData = document.getElementById("prodsList-dysplay");
-socket.on("productList",async (data)=>{
-    console.log(data);
-    let prodsList = "";
-    await data.forEach((e) => {
-        prodsList += `<h3> titulo: ${e.title}</h3><br><h4>id: ${e.id}</h4><br><p>code: ${e.code}</p>`;
-    });
-    productData.innerHTML = prodsList;
-})
-
+socket.on("productList", async (data) => {
+  console.log(data);
+  let prodsList = "";
+  await data.forEach((e) => {
+    prodsList += `<ul>
+        
+            <li>Titulo:${e.title}, Id:${e.id}, Precio${e.price}, Stock:${e.stock}</li>
+    
+    </ul>`;
+  });
+  productData.innerHTML = prodsList;
+});
