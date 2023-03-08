@@ -63,11 +63,9 @@ class ProductManager {
     ) {
       console.log("info completa gracias");
     } else {
-      console.log(
-        `falta informacion para este item, 
-          recuerde agregar todos los campos:
-          code || title || description || price || thumbnail || stock`
-      );
+      throw new Error (`falta informacion para este item, 
+      recuerde agregar todos los campos:
+      code || title || description || price || thumbnail || stock`);
     }
     //revisar que no existe codigo
     let products = await this.getProducts();
@@ -87,8 +85,9 @@ class ProductManager {
       };
       products = [...products, newProduct];
       await fs.promises.writeFile(this.#path, JSON.stringify(products));
+      return this.getProducts();
     } else {
-      console.log(`Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`);
+      throw new Error (`Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`);
     }
   }
 
@@ -103,7 +102,7 @@ class ProductManager {
       console.log(idFound);
       return idFound;
     } else {
-      console.log(`el id ${id} solicitado no existe`);
+      throw new Error (`el id ${id} solicitado no existe`);
     }
   }
 
@@ -131,17 +130,20 @@ class ProductManager {
         console.log(toDelete);
         await fs.promises.writeFile(this.#path, JSON.stringify(toDelete));
         console.log(`producto con id ${id} eliminado`);
+        return `producto con id ${id} eliminado`
       } else {
         console.log("no se borrara por falta de id");
+        return "no se borrara por falta de id"
       }
     } catch (error) {
       console.log("error al borrar");
+      throw new Error ("error al borrar");
     }
   }
 
   async updateProdById(id, keyToUpdate, dataUpdate) {
     if (!id || !keyToUpdate || !dataUpdate) {
-      console.log("falta Información");
+      throw new Error (`falta Información`);
     } else {
       const products = await this.getProducts();
       const chkId = await this.chkProdsById(products, id);
@@ -155,6 +157,7 @@ class ProductManager {
             await fs.promises.writeFile(this.#path, JSON.stringify(updateCode));
             console.log(`elemento con id ${id} modifico el codigo`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el codigo`
             break;
 
           case "title":
@@ -167,6 +170,7 @@ class ProductManager {
             );
             console.log(`elemento con id ${id} modifico el title`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el title`
             break;
 
           case "description":
@@ -176,6 +180,7 @@ class ProductManager {
             await fs.promises.writeFile(this.#path, JSON.stringify(updateDesc));
             console.log(`elemento con id ${id} modifico el description`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el description`
             break;
 
           case "price":
@@ -188,6 +193,7 @@ class ProductManager {
             );
             console.log(`elemento con id ${id} modifico el description`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el description`
             break;
 
           case "thumnail":
@@ -200,6 +206,7 @@ class ProductManager {
             );
             console.log(`elemento con id ${id} modifico el Thumnail`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el Thumnail`
             break;
 
           case "stock":
@@ -212,14 +219,16 @@ class ProductManager {
             );
             console.log(`elemento con id ${id} modifico el Stock`);
             await this.getProducts();
+            return `elemento con id ${id} modifico el Stock`
             break;
 
           default:
             console.log("no se encontró el atributo del producto con el id");
+            return "no se encontró el atributo del producto con el id";
             break;
         }
       } else {
-        console.log(`el id ${id} no existe y no se actualizaran los datos`);
+        throw new Error (`el id ${id} no existe y no se actualizaran los datos`);
       }
     }
   }

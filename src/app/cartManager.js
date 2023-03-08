@@ -35,6 +35,7 @@ class CartManager {
 
   async getCarts(cId) {
     try {
+      
       if (cId) {
         const cartId = Number(cId);
         const carts = await fs.promises.readFile(this.#path, "utf-8");
@@ -86,6 +87,7 @@ class CartManager {
         return updatedCarts;
       }
     } else {
+      throw new Error (`el carrito con el id ${cId} no existe`);
       return console.log(`el carrito con el id ${cId} no existe`);
     }
   }
