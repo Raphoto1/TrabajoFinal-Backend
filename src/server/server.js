@@ -24,13 +24,11 @@ app.use("/api/products", productManagerRouter);
 app.use("/api/cart", cartManagerRouter);
 
 //call de io
-app.use((req,res, next) =>{
-    // const data = req.query;
-    // console.log(JSON.parse(data));
+app.use((req,res, nextToWork) =>{
+     const data = req.enviarProds;
     req.socketServer = socketServer;
-    next();
-    socketServer.emit("productList", "llegadaData");
-    
+    socketServer.emit("productList", data);
+    nextToWork();
 })
 
 //escucha
