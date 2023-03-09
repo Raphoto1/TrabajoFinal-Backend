@@ -3,6 +3,7 @@ import ProductManager from "../app/productManager.js";
 
 const productManagerRouter = Router();
 productManagerRouter.use(json());
+
 const item = new ProductManager();
 
 productManagerRouter.get("/", async (req, res) => {
@@ -34,14 +35,14 @@ productManagerRouter.get("/:id", async (req, res) => {
 //post carga de info code, no llega la info por body, llega por query
 productManagerRouter.post("/", async (req, res) => {
   try {
-    const code = req.query.code;
-    const title = req.query.title;
-    const description = req.query.description;
-    const price = Number(req.query.price);
-    const thumbnail = req.query.thumbnail;
-    const stock = Number(req.query.stock);
-    const status = req.query.status;
-    const category = req.query.category;
+    const code = req.body.code;
+    const title = req.body.title;
+    const description = req.body.description;
+    const price = Number(req.body.price);
+    const thumbnail = req.body.thumbnail;
+    const stock = Number(req.body.stock);
+    const status = req.body.status;
+    const category = req.body.category;
     const test = console.log(
       code + title + description + price + thumbnail + stock + status + category
     );
@@ -63,9 +64,9 @@ productManagerRouter.post("/", async (req, res) => {
 
 productManagerRouter.put("/", async (req, res) => {
   try {
-    const prodIdUp = Number(req.query.prodIdUp);
-    const value = req.query.value;
-    const data = req.query.data;
+    const prodIdUp = Number(req.body.prodIdUp);
+    const value = req.body.value;
+    const data = req.body.data;
     // const result = prodIdUp + value + data;
     const result = await item.updateProdById(prodIdUp, value, data);
     res.send(result);
