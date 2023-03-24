@@ -1,14 +1,12 @@
-import fs from "fs";
+import cartModel from "../models/carts.model.js";
 import ProductManager from "./productManager.js";
 
 const item = new ProductManager();
 
 class CartManager {
-  #path = "./src/server/carts.json";
   idAcum = 0;
 
-  constructor(path) {
-    path = this.#path;
+  constructor() {
   }
   //creamos carrito
   async createCart() {
@@ -17,8 +15,8 @@ class CartManager {
       cId: await this.idOrganizer(),
       products: [],
     };
-    carts = [...carts, newCart];
-    await fs.promises.writeFile(this.#path, JSON.stringify(carts));
+    const result = await cartModel.create(newCart);
+    return result
   }
   //organizador de ids
   async idOrganizer() {
@@ -37,15 +35,14 @@ class CartManager {
     try {
       if (cId) {
         const cartId = Number(cId);
-        const carts = await fs.promises.readFile(this.#path, "utf-8");
-        const cartsJson = await JSON.parse(carts);
-        const filteredCart = await cartsJson.find(
+        const carts = await cartModel.find().lean();
+        const filteredCart = await carts.find(
           (cart) => cart.cId === cartId
         );
         return filteredCart;
       } else {
-        const prodsInCart = await fs.promises.readFile(this.#path, "utf-8");
-        return JSON.parse(prodsInCart);
+        const prodsInCart = await cartModel.find().lean();
+        return prodsInCart;
       }
     } catch (error) {
       return [];
@@ -62,7 +59,8 @@ class CartManager {
     const carts = await this.getCarts();
     const chkcId = await this.chkCartById(carts, cId);
     if (chkcId) {
-      const cartToWork = await carts.find((cart) => cart.cId === cId);
+      //buscar en db rl carrito
+      const cartToWork = await cartModel.find(cId);
       //revisar si el producto ya existe en la lista
       let prodInCart = cartToWork.products.some((p) => p.pId === pId);
       // console.log(cartToWork.quantity=+1);

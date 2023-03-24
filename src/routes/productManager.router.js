@@ -1,5 +1,5 @@
 import { Router, json } from "express";
-import ProductManager from "../app/productManager.js";
+import {ProductManager} from "../dao/index.js";
 
 const productManagerRouter = Router();
 productManagerRouter.use(json());
@@ -52,9 +52,9 @@ productManagerRouter.post("/", async (req, res, midSocket) => {
         title,
         description,
         price,
-        // thumbnail,
+        thumbnail,
         stock,
-        // status,
+        status,
         category
       );
       const enviarProds = await item.getProducts();

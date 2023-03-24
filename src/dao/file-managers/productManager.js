@@ -1,7 +1,7 @@
 import fs from "fs";
 
 class ProductManager {
-  #path = "./src/server/prods.json";
+  #path = "./src/dao/file-managers/files/prods.json";
   idAcum = 0;
   constructor(path) {
     path = this.#path;
