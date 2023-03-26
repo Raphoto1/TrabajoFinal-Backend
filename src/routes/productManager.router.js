@@ -23,7 +23,7 @@ productManagerRouter.get("/", async (req, res) => {
 //segun el id
 productManagerRouter.get("/:id", async (req, res) => {
     try {
-      const prodId = Number(req.params.id);
+      const prodId = req.params.id;
       const log = console.log(prodId);
       const result = await item.getProductById(prodId);
       return res.send(result);
@@ -70,7 +70,7 @@ productManagerRouter.post("/", async (req, res, midSocket) => {
 
 productManagerRouter.put("/", async (req, res) => {
     try {
-      const prodIdUp = Number(req.body.prodIdUp);
+      const prodIdUp = req.body.prodIdUp;
       const value = req.body.value;
       const data = req.body.data;
       // const result = prodIdUp + value + data;
@@ -84,7 +84,7 @@ productManagerRouter.put("/", async (req, res) => {
   //delete
   productManagerRouter.delete("/:id", async (req, res) => {
     try {
-      const prodId = Number(req.params.id);
+      const prodId = req.params.id;
       const result = await item.deleteProdById(prodId);
       res.send(result);
     } catch (err) {

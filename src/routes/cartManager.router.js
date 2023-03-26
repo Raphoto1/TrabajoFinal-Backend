@@ -11,7 +11,14 @@ cartManagerRouter.post("/", async (req,res) =>{
 }) 
 
 cartManagerRouter.get("/", async (req, res) => {
-    const{cId} = req.query;
+    const{cId} = req.params;
+    const carts = await cart.getCarts(cId);
+    console.log(carts);
+    await res.send(carts);
+})
+
+cartManagerRouter.get("/:cId", async (req, res) => {
+    const{cId} = req.params;
     const carts = await cart.getCarts(cId);
     console.log(carts);
     await res.send(carts);
