@@ -17,3 +17,4 @@ socket.on("productList", async (data) => {
   });
   productData.innerHTML = prodsList;
 });
+

@@ -15,5 +15,9 @@ viewer.get('/real-time-products', (req, res) => {
     res.render('real_time_products');
 });
 
+viewer.get(`/chat`, (req,res) => {
+    res.render(`chat`);
+})
+
 
 export default viewer;

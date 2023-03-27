@@ -1,6 +1,8 @@
 import express, {urlencoded} from "express";
 import productManagerRouter from "../routes/productManager.router.js";
-import cartManagerRouter from "../routes/cartManager.router.js"
+import cartManagerRouter from "../routes/cartManager.router.js";
+import chatManagerRouter from "../routes/chatManager.router.js";
+import ChatManager from "../dao/db-managers/chatManager.js";
 import __dirname from "./utils.js";
 import { engine} from "express-handlebars";
 import { Server } from "socket.io";
@@ -23,14 +25,33 @@ app.use("/", viewer);
 app.use("/api/products", productManagerRouter);
 //cart route
 app.use("/api/cart", cartManagerRouter);
-
-//call de io
+//chat route
+app.use("/chat", chatManagerRouter);
+//call de io products
 app.use((req,res, midSocket) =>{
      const data = req.enviarProds;
     req.socketServer = socketServer;
     socketServer.emit("productList", data);
     midSocket();
-})
+});
+//call de io chat NO FUNCIONO SE DEJA PARA ESTUDIO
+// app.use((req,res,chatSocket) =>{
+//     let requestMethod = req.method;
+//     console.log(requestMethod);
+//    const data = req.enviarChats;
+//    req.socketServer = socketServer;
+//    socketServer.on("new-user",(userName) =>{
+//     console.log(userName);
+//    })
+//    socketServer.emit("messages", "aqui estoy en messages");
+
+//     chatSocket();
+// })
+
+//chat directo
+const chat = new ChatManager;
+
+
 
 //connect mongoose
 mongoose.connect(`mongodb+srv://rrhhmmtt:rafa87@codercluster.tcey2ua.mongodb.net/ecommerse?retryWrites=true&w=majority`).then((con) => {
@@ -42,13 +63,30 @@ const httpServer = app.listen(8080, () => {
 console.log("listening 8080");
 });
 
+// const messages= chat.getMessages();
+// chat.getMessages(messages)
 
 const socketServer = new Server(httpServer);
 //listener se socket
 socketServer.on("connection", (socket)=>{
     console.log("nuevo cliente conectado");
+    //products
     socket.emit("productList", "mensaje desde server");
-})
+    socket.emit("messages", "mensaje para chat")
+    //chat
+    socket.on("chat-message", async (data) => {
+        await chat.recieve(data);
+        const messages = await chat.getMessages()
+        socketServer.emit("messages", messages);
+    });
+
+    socket.on("new-user", async (userName) => {
+        const messages = await chat.getMessages();
+        socket.emit("messages", messages);
+        socket.broadcast.emit("new-user", userName)
+    });
+
+});
 
 
 //get products
