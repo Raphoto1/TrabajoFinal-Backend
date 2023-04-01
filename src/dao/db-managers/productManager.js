@@ -29,6 +29,17 @@ class ProductManager {
     }
   }
 
+  async getProducts2(){
+    try {
+      const products = await productModel.paginate(
+        {limit: 10, page: 1}
+      )
+      return products
+    } catch (error) {
+      
+    }
+  }
+
   async chkProdsById(arr, id) {
 let check = await productModel.findById(id);
     // let check = await arr.find((prod) => prod.id === id);
