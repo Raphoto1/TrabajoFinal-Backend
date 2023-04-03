@@ -3,8 +3,7 @@ import productModel from "../models/products.model.js";
 
 class ProductManager {
   idAcum = 0;
-  constructor() {
-  }
+  constructor() {}
 
   async idOrganizer() {
     const products = await this.getProducts();
@@ -20,28 +19,36 @@ class ProductManager {
     }
   }
 
-  async getProducts() {
+  async getProducts(limit, page, sortQ, queryKey, queryParam) {
+    //filters
+
+    let limitIn = limit ? limit : 10;
+    let pageIn = page ? page : 1;
+    let sortIn = sortQ ? { price: sortQ } : false;
+    let queryKeyIn = queryKey;
+    let queryIn = queryParam;
+    //paquete query
+    
+    //paquete options
+    let options = { limit: limitIn, page: pageIn, sort: sortIn };
+    let querySearch;
+    if (queryKeyIn&&queryIn) {
+      querySearch = {[queryKeyIn]:[queryIn]}
+      options.limit = 5;
+    } else {
+      {};
+    }
+
     try {
-      const products = await productModel.find().lean();
+      const products = await productModel.paginate(querySearch, options);
       return products;
     } catch (error) {
-      return [];
-    }
-  }
-
-  async getProducts2(){
-    try {
-      const products = await productModel.paginate(
-        {limit: 10, page: 1}
-      )
-      return products
-    } catch (error) {
-      
+      return error(401, "falla con mongo");
     }
   }
 
   async chkProdsById(arr, id) {
-let check = await productModel.findById(id);
+    let check = await productModel.findById(id);
     // let check = await arr.find((prod) => prod.id === id);
     console.log(check);
     return check;
@@ -73,31 +80,31 @@ let check = await productModel.findById(id);
       );
     }
     //revisar que no existe codigo
-    let products = await this.getProducts();
-    const chk = await this.chkProdsByCode(products, code);
-    if (!chk) {
+    let products = await this.getProducts(1,1,false,"code",code);
+    if (products.totalDocs===0) {
       console.log(`no existe codigo: ${code} ===> SE CREARA NUEVO PRODUCTO`);
       const product = {
         code,
-    title,
-    description,
-    price,
-    thumbnail,
-    stock,
-    status,
-    category
+        title,
+        description,
+        price,
+        thumbnail,
+        stock,
+        status,
+        category,
       };
       const result = await productModel.create(product);
       return result;
     } else {
       console.log(`Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`);
+      return `Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`
     }
   }
 
   async getProductById(id) {
     const products = await this.getProducts();
     const chkProductId = await this.chkProdsById(products, id);
-    
+
     if (chkProductId) {
       console.log(
         `producto con el id ${id} encontrado, se mostrara a continuacion`
@@ -106,7 +113,7 @@ let check = await productModel.findById(id);
       return chkProductId;
     } else {
       console.log(`el id ${id} solicitado no existe`);
-      return `el id ${id} solicitado no existe`
+      return `el id ${id} solicitado no existe`;
     }
   }
 
@@ -127,28 +134,24 @@ let check = await productModel.findById(id);
 
   async deleteProdById(id) {
     try {
-      let del =await productModel.deleteOne({"_id": `${id}` });
-      return del
+      let del = await productModel.deleteOne({ _id: `${id}` });
+      return del;
     } catch (error) {
       console.log("error al borrar");
       return error;
     }
   }
 
-async updateProdById(id, keyToUpdate, dataUpdate){
-  if (!id || !keyToUpdate || !dataUpdate) {
-        console.log("falta Información");
-      } else {
-        let update = await productModel.updateOne(
-          {_id: id},
-          [
-            {$set: {[keyToUpdate]: `${dataUpdate}`}}
-          ]
-        )
-        return update;
-      }
-}
-
+  async updateProdById(id, keyToUpdate, dataUpdate) {
+    if (!id || !keyToUpdate || !dataUpdate) {
+      console.log("falta Información");
+    } else {
+      let update = await productModel.updateOne({ _id: id }, [
+        { $set: { [keyToUpdate]: `${dataUpdate}` } },
+      ]);
+      return update;
+    }
+  }
 }
 
 export default ProductManager;
