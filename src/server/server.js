@@ -20,6 +20,8 @@ app.use(express.json());
 app.use(express.static(__dirname + "/../../public"));
 //viewer route
 app.use("/", viewer);
+app.use("/products", viewer);
+app.use("/products/productDetail", viewer);
 
 //products route
 app.use("/api/products", productManagerRouter);
@@ -50,8 +52,6 @@ app.use((req,res, midSocket) =>{
 
 //chat directo
 const chat = new ChatManager;
-
-
 
 //connect mongoose
 mongoose.connect(`mongodb+srv://rrhhmmtt:rafa87@codercluster.tcey2ua.mongodb.net/ecommerse?retryWrites=true&w=majority`).then((con) => {
