@@ -1,4 +1,5 @@
 import cartModel from "../models/carts.model.js";
+import productModel from "../models/products.model.js";
 import ProductManager from "./productManager.js";
 
 const item = new ProductManager();
@@ -31,7 +32,10 @@ class CartManager {
   async getCarts(cId) {
     try {
       if (cId) {
-        const cartsfiltered = await cartModel.find({ _id: `${cId}` }).lean();
+        const cartsfiltered = await cartModel
+          .find({ _id: `${cId}` })
+          .populate("products.product");
+        console.log(JSON.stringify(cartsfiltered, null, "\t"));
         return cartsfiltered;
       } else {
         const prodsInCart = await cartModel.find().lean();
@@ -40,6 +44,46 @@ class CartManager {
     } catch (error) {
       return [];
     }
+  }
+
+  async addProductToCart2(cId, pId, quanty) {
+    try {
+      //revisar que el cId exista
+      const cart = await cartModel.findById(cId);
+      if (cart) {
+        //revisar que el producto si existe
+        const prodToAdd = await item.getProductById(pId);
+        if (prodToAdd) {
+          //revisar si existe el prod en el carrito
+          let isInCart = await cartModel.exists({_id: cId,"products.product": pId});
+          let quantyToAdd = quanty ? quanty : 1;
+          if (isInCart === null) {
+            console.log("prod NO ESTA EN EL CARRITO");
+            let updateCart = await cartModel.updateOne({_id: cId},
+           {$push: {products:{product: pId, quantity:quantyToAdd}}},
+          )
+          const cartupdated = await cartModel.findById(cId);
+            console.log(cartupdated);
+          return updateCart,cartupdated
+          } else {
+            console.log("prod si esta en el carrito");
+            let updateProdInCart = await cartModel.findOneAndUpdate({_id: cId,"products.product": pId},
+              {$set: {products:{product: pId, quantity:quantyToAdd}}},
+            );
+            const cartupdated = await cartModel.findById(cId);
+            console.log(cartupdated);
+            return updateProdInCart, cartupdated;
+          }
+          
+
+          
+        } else {
+          return "no existe el producto";
+        }
+      } else {
+        return "no existe el carrito";
+      }
+    } catch (error) {}
   }
 
   async addProductToCart(cId, pId, quanty) {
@@ -56,13 +100,13 @@ class CartManager {
         } else {
           console.log("se agregara el producto");
           //revisar quantity, si no hay agregar 1, si ya existe agregarle, si hay varios quanty sumarlos
-          //agregar prod si no existe
-          let prodExist = cart.products.some((p) => p.product === pId);
+          //agregar prod si no existe en el carrito
+          let prodExist = cart.products.some((p) => p.product._id === pId);
+          // let prodExist = cartModel.find({_id:ObjectId(pId)});
+          console.log(`esto es de cart.products ${prodExist}`);
           if (prodExist) {
             let chkquanty = quanty ? quanty : 1;
             if (chkquanty > 1) {
-              console.log("mas de 1");
-              console.log(Number(quanty));
               let addMany = cart.products.map((p) => {
                 if (p.product === pId) {
                   return {
@@ -72,7 +116,7 @@ class CartManager {
                 }
                 return p;
               });
-              console.log(addMany);
+              console.log(`esto es de addMany, ${addMany}`);
               cart.products = addMany;
               return cart.save();
             } else {
@@ -86,7 +130,7 @@ class CartManager {
                 }
                 return p;
               });
-              console.log(addOne);
+              console.log(`esto es de agrega 1 ${addOne}`);
               cart.products = addOne;
               return cart.save();
             }
@@ -95,12 +139,16 @@ class CartManager {
           } else {
             //se revisa quantity si no existe el producto
             let quantyDirect;
-            if (quanty>1) {
-              quantyDirect=quanty;
+            if (quanty > 1) {
+              quantyDirect = quanty;
             } else {
-              quantyDirect=1;
+              quantyDirect = 1;
             }
-            let addProd = [...cart.products, { product: pId, quantity: Number(quantyDirect) }];
+            let addProd = [
+              ...cart.products,
+              { product: pId, quantity: Number(quantyDirect) },
+            ];
+            console.log(`esto es de add de cero`);
             cart.products = addProd;
             return cart.save();
           }
@@ -112,6 +160,37 @@ class CartManager {
     } catch (error) {
       return "error en add";
     }
+  }
+
+  async addProductArray(cId, arr) {
+    try {
+      console.log(cId);
+      if (!cId || !arr) {
+        console.log("falta info");
+        return "falta info";
+      } else {
+        console.log(arr);
+
+        let test = await this.getCarts(cId);
+        console.log(test);
+        let addArr = await cartModel.updateOne(
+          { _id: cId },
+          { $push: { products: { $each: arr } } }
+        );
+        console.log(addArr);
+        return addArr;
+      }
+    } catch (error) {
+      return "error en upppadad";
+    }
+  }
+
+  async clearCart(cId) {
+    let cartToClear = await cartModel.updateOne(
+      { _id: cId },
+      { $pull: { products: {} } }
+    );
+    return cartToClear;
   }
 
   async deleteProd(cId, pId) {

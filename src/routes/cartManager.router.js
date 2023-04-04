@@ -30,16 +30,29 @@ cartManagerRouter.delete("/:cId/products/:pId", async (req,res) => {
     const prodToDel = await cart.deleteProd(cId,pId);
     res.send(prodToDel);
 })
-
-//agregar UN producto al carrito
-cartManagerRouter.post("/:cId/product/:pId", async (req,res) =>{
-    const cartId = await req.params.cId;
-    const prodId = await req.params.pId;
-    const prodQuanty = req.body.pQ;
-    const result = await cart.addProductToCart(cartId, prodId, prodQuanty);
-    await res.send(result);
+//limpiar carrito
+cartManagerRouter.delete("/:cId",async (req,res) => {
+    const {cId} = req.params;
+    const result = await cart.clearCart(cId);
+    res.send(result);
 })
 
+//agregar UN producto al carrito
+cartManagerRouter.put("/:cId/product/:pId", async (req,res) =>{
+    const cartId = req.params.cId;
+    const prodId = req.params.pId;
+    const prodQuanty = req.body.pQ;
+    const result = await cart.addProductToCart2(cartId, prodId, prodQuanty);
+    res.send(result);
+})
+
+//agregar un array de productos directo a un carrito
+cartManagerRouter.put("/:cId", async(req,res) => {
+    const {cId} = req.params;
+    const arr = req.body;
+    const result = await cart.addProductArray(cId, arr);
+    res.send(result)
+})
 
 
 export default cartManagerRouter;

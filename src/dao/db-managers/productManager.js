@@ -21,22 +21,20 @@ class ProductManager {
 
   async getProducts(limit, page, sortQ, queryKey, queryParam) {
     //filters
-
     let limitIn = limit ? limit : 10;
     let pageIn = page ? page : 1;
     let sortIn = sortQ ? { price: sortQ } : false;
     let queryKeyIn = queryKey;
     let queryIn = queryParam;
-    //paquete query
-    
     //paquete options
     let options = { limit: limitIn, page: pageIn, sort: sortIn };
+    //paquete query
     let querySearch;
-    if (queryKeyIn&&queryIn) {
-      querySearch = {[queryKeyIn]:[queryIn]}
+    if (queryKeyIn && queryIn) {
+      querySearch = { [queryKeyIn]: [queryIn] };
       options.limit = 5;
     } else {
-      {};
+      {}
     }
 
     try {
@@ -79,8 +77,8 @@ class ProductManager {
       );
     }
     //revisar que no existe codigo
-    let products = await this.getProducts(1,1,false,"code",code);
-    if (products.totalDocs===0) {
+    let products = await this.getProducts(1, 1, false, "code", code);
+    if (products.totalDocs === 0) {
       console.log(`no existe codigo: ${code} ===> SE CREARA NUEVO PRODUCTO`);
       const product = {
         code,
@@ -96,7 +94,7 @@ class ProductManager {
       return result;
     } else {
       console.log(`Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`);
-      return `Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`
+      return `Ya existe el codigo ${code} y NO SE CREARA PRODUCTO`;
     }
   }
 
