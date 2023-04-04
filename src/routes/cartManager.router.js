@@ -42,7 +42,7 @@ cartManagerRouter.put("/:cId/product/:pId", async (req,res) =>{
     const cartId = req.params.cId;
     const prodId = req.params.pId;
     const prodQuanty = req.body.pQ;
-    const result = await cart.addProductToCart2(cartId, prodId, prodQuanty);
+    const result = await cart.addProductToCart3(cartId, prodId, prodQuanty);
     res.send(result);
 })
 

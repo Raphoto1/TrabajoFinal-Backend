@@ -46,121 +46,69 @@ class CartManager {
     }
   }
 
-  async addProductToCart2(cId, pId, quanty) {
+  async addProductToCart3(cartId, productId, quanty) {
     try {
-      //revisar que el cId exista
-      const cart = await cartModel.findById(cId);
-      if (cart) {
-        //revisar que el producto si existe
-        const prodToAdd = await item.getProductById(pId);
-        if (prodToAdd) {
-          //revisar si existe el prod en el carrito
-          let isInCart = await cartModel.exists({_id: cId,"products.product": pId});
-          let quantyToAdd = quanty ? quanty : 1;
-          if (isInCart === null) {
-            console.log("prod NO ESTA EN EL CARRITO");
-            let updateCart = await cartModel.updateOne({_id: cId},
-           {$push: {products:{product: pId, quantity:quantyToAdd}}},
-          )
-          const cartupdated = await cartModel.findById(cId);
-            console.log(cartupdated);
-          return updateCart,cartupdated
-          } else {
-            console.log("prod si esta en el carrito");
-            let updateProdInCart = await cartModel.findOneAndUpdate({_id: cId,"products.product": pId},
-              {$set: {products:{product: pId, quantity:quantyToAdd}}},
-            );
-            const cartupdated = await cartModel.findById(cId);
-            console.log(cartupdated);
-            return updateProdInCart, cartupdated;
-          }
-          
+      const findProduct = await cartModel
+        .findById(cartId)
+        .populate("products.product");
 
-          
-        } else {
-          return "no existe el producto";
-        }
+      const existingProductIndex = findProduct.products.findIndex(
+        (p) => p.product._id.toString() === productId
+      );
+      let quantyToAdd = quanty ? quanty : 1;
+      if (existingProductIndex !== -1) {
+        findProduct.products[existingProductIndex].quantity += Number(quantyToAdd);
       } else {
-        return "no existe el carrito";
+        findProduct.products.push({ product: productId, quantity: quantyToAdd });
       }
-    } catch (error) {}
-  }
 
-  async addProductToCart(cId, pId, quanty) {
-    try {
-      //revisar que el cId exista
-      const cart = await cartModel.findById(cId);
-      if (cart) {
-        console.log("si existe el carrito");
-        //revisar que el producto si existe
-        const prodToAdd = await item.getProductById(pId);
-        if (prodToAdd._id == null) {
-          console.log("el producto a agregar no existe");
-          return "el producto a agregar no existe";
-        } else {
-          console.log("se agregara el producto");
-          //revisar quantity, si no hay agregar 1, si ya existe agregarle, si hay varios quanty sumarlos
-          //agregar prod si no existe en el carrito
-          let prodExist = cart.products.some((p) => p.product._id === pId);
-          // let prodExist = cartModel.find({_id:ObjectId(pId)});
-          console.log(`esto es de cart.products ${prodExist}`);
-          if (prodExist) {
-            let chkquanty = quanty ? quanty : 1;
-            if (chkquanty > 1) {
-              let addMany = cart.products.map((p) => {
-                if (p.product === pId) {
-                  return {
-                    ...p,
-                    quantity: p.quantity + Number(quanty),
-                  };
-                }
-                return p;
-              });
-              console.log(`esto es de addMany, ${addMany}`);
-              cart.products = addMany;
-              return cart.save();
-            } else {
-              console.log("solo se agrega 1");
-              let addOne = cart.products.map((p) => {
-                if (p.product === pId) {
-                  return {
-                    ...p,
-                    quantity: p.quantity + 1,
-                  };
-                }
-                return p;
-              });
-              console.log(`esto es de agrega 1 ${addOne}`);
-              cart.products = addOne;
-              return cart.save();
-            }
-
-            return "ya existe el producto y se agrega";
-          } else {
-            //se revisa quantity si no existe el producto
-            let quantyDirect;
-            if (quanty > 1) {
-              quantyDirect = quanty;
-            } else {
-              quantyDirect = 1;
-            }
-            let addProd = [
-              ...cart.products,
-              { product: pId, quantity: Number(quantyDirect) },
-            ];
-            console.log(`esto es de add de cero`);
-            cart.products = addProd;
-            return cart.save();
-          }
-        }
-      } else {
-        console.log("no existe el carrito solicitado");
-      }
-      console.log(carts);
-    } catch (error) {
-      return "error en add";
+      return await findProduct.save();
+    } catch (err) {
+      throw new Error(err);
     }
   }
+  //intento modificacion directa por mongo FALLA
+  // async addProductToCart2(cId, pId, quanty) {
+  //   try {
+  //     //revisar que el cId exista
+  //     const cart = await cartModel.findById(cId);
+  //     if (cart) {
+  //       //revisar que el producto si existe
+  //       const prodToAdd = await item.getProductById(pId);
+  //       if (prodToAdd) {
+  //         //revisar si existe el prod en el carrito
+  //         let isInCart = await cartModel.exists({
+  //           _id: cId,
+  //           "products.product": pId,
+  //         });
+  //         let quantyToAdd = quanty ? quanty : 1;
+  //         if (isInCart === null) {
+  //           console.log("prod NO ESTA EN EL CARRITO");
+  //           let updateCart = await cartModel.updateOne(
+  //             { _id: cId },
+  //             { $push: { products: { product: pId, quantity: quantyToAdd } } }
+  //           );
+  //           const cartupdated = await cartModel.findById(cId);
+  //           console.log(cartupdated);
+  //           return updateCart, cartupdated;
+  //         } else {
+  //           console.log("prod si esta en el carrito");
+  //           let updateProdInCart = await cartModel.updateOne(
+  //             { _id: cId, "products.product": pId },
+  //             { $set: { products: { product: pId, quantity: quantyToAdd } } }
+  //           );
+  //           const cartupdated = await cartModel.findById(cId);
+  //           console.log(cartupdated);
+  //           return updateProdInCart, cartupdated;
+  //         }
+  //       } else {
+  //         return "no existe el producto";
+  //       }
+  //     } else {
+  //       return "no existe el carrito";
+  //     }
+  //   } catch (error) {}
+  // }
 
   async addProductArray(cId, arr) {
     try {
