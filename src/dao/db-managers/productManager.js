@@ -43,13 +43,12 @@ class ProductManager {
       const products = await productModel.paginate(querySearch, options);
       return products;
     } catch (error) {
-      return error(401, "falla con mongo");
+      return "falla con mongo";
     }
   }
 
-  async chkProdsById(arr, id) {
+  async chkProdsById(id) {
     let check = await productModel.findById(id);
-    // let check = await arr.find((prod) => prod.id === id);
     console.log(check);
     return check;
   }
@@ -103,13 +102,12 @@ class ProductManager {
 
   async getProductById(id) {
     const products = await this.getProducts();
-    const chkProductId = await this.chkProdsById(products, id);
+    const chkProductId = await this.chkProdsById(id);
 
     if (chkProductId) {
       console.log(
         `producto con el id ${id} encontrado, se mostrara a continuacion`
       );
-      console.log(chkProductId);
       return chkProductId;
     } else {
       console.log(`el id ${id} solicitado no existe`);
