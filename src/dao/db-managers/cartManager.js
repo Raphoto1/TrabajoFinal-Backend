@@ -34,8 +34,7 @@ class CartManager {
       if (cId) {
         const cartsfiltered = await cartModel
           .find({ _id: `${cId}` })
-          .populate("products.product");
-        console.log(JSON.stringify(cartsfiltered, null, "\t"));
+          .populate("products.product").lean();
         return cartsfiltered;
       } else {
         const prodsInCart = await cartModel.find().lean();

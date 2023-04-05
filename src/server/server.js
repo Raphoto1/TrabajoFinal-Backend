@@ -22,6 +22,7 @@ app.use(express.static(__dirname + "/../../public"));
 app.use("/", viewer);
 app.use("/products", viewer);
 app.use("/products/productDetail", viewer);
+app.use("/cart", viewer);
 
 //products route
 app.use("/api/products", productManagerRouter);
