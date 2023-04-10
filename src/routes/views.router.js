@@ -8,22 +8,43 @@ const item = new ProductManager();
 const cart = new CartManager();
 
 const viewer = Router();
-
+//login
+viewer.get("/login",(req,res) =>{
+    res.render("login");
+})
+//signup
+viewer.get("/register",(req,res) =>{
+    res.render("register");
+})
+//profile
+// Router.get("/profile", (req,res) =>{
+//     console.log(req.session);
+//     res.render("profile");
+// })
+//home
 viewer.get("/", async (req,res) =>{
-    
     const prods = await productModel.paginate();
     console.log(prods);
     res.render("index", {prods});
 })
 //todos los productos
-viewer.get("/products", async (req,res) =>{
+viewer.get("/products", authenticate, async (req,res) =>{
+    console.log(`esto se ve desde prods${req.session}`);
     const {page} =req.query;
     const prods = await  productModel.paginate(
         {},{limit: 10, lean:true, page: page??1}
     );
-    console.log(prods.docs);
+    // console.log(prods.docs);
     res.render("products", {prods});
 })
+//middle se aut
+async function authenticate(req, res, next) {
+    console.log(`esto se ve desde midd ${req.session}`);
+    if (req.session.rol === "admin") {
+        return next();
+      }
+  }
+
 //info del producto preciso
 viewer.get("/products/productDetail", async (req,res) =>{
     const {pId} = req.query;
@@ -39,17 +60,16 @@ viewer.get("/cart/:cId", async(req,res) => {
     console.log(detailCart);
     res.render("cart", {detailCart});
 })
-
-
-
-
+//realtime
 viewer.get('/real-time-products', (req, res) => {
     res.render('real_time_products');
 });
-
+//chat
 viewer.get(`/chat`, (req,res) => {
     res.render(`chat`);
 })
+
+
 
 
 export default viewer;

@@ -47,7 +47,6 @@ class ProductManager {
 
   async chkProdsById(id) {
     let check = await productModel.findById(id).lean();
-    console.log(check);
     return check;
   }
 

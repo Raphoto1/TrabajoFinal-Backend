@@ -4,7 +4,6 @@ import ChatManager from "../dao/db-managers/chatManager.js";
 const chatManagerRouter = Router();
 chatManagerRouter.use(json());
 const chat = new ChatManager();
-console.log("estoy en router chat");
 
 chatManagerRouter.put("/", async (req,res, chatSocket) =>{
     try {

@@ -3,14 +3,21 @@ import productManagerRouter from "../routes/productManager.router.js";
 import cartManagerRouter from "../routes/cartManager.router.js";
 import chatManagerRouter from "../routes/chatManager.router.js";
 import ChatManager from "../dao/db-managers/chatManager.js";
+import { AuthRouter } from "../routes/auth.router.js";
+
 import __dirname from "./utils.js";
 import { engine} from "express-handlebars";
 import { Server } from "socket.io";
 import viewer from "../routes/views.router.js";
 import mongoose from "mongoose";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import cookieParser from "cookie-parser";
+
 
 const app = express();
 app.use(urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -23,6 +30,21 @@ app.use("/", viewer);
 app.use("/products", viewer);
 app.use("/products/productDetail", viewer);
 app.use("/cart", viewer);
+
+
+//API PACK
+//session
+app.use(session({
+    store:MongoStore.create({
+        mongoUrl:`mongodb+srv://rrhhmmtt:rafa87@codercluster.tcey2ua.mongodb.net/ecommerse?retryWrites=true&w=majority`,
+        ttl:10
+    }),
+    secret:"claveDificil",
+    resave:true,
+    saveUninitialized:true
+}));
+//
+app.use("/api/sessions", AuthRouter);
 
 //products route
 app.use("/api/products", productManagerRouter);
@@ -37,6 +59,15 @@ app.use((req,res, midSocket) =>{
     socketServer.emit("productList", data);
     midSocket();
 });
+
+//middle se aut
+function authenticate(req, res, next) {
+    if (req.session.user === "user" && req.session.isAdmin) {
+      return next();
+    }
+    return res.status(401).send("Error de autenticación");
+  }
+
 //call de io chat NO FUNCIONO SE DEJA PARA ESTUDIO
 // app.use((req,res,chatSocket) =>{
 //     let requestMethod = req.method;

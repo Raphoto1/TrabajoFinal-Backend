@@ -5,7 +5,10 @@ const productManagerRouter = Router();
 productManagerRouter.use(json());
 const item = new ProductManager();
 
-productManagerRouter.get("/", async (req, res) => {
+productManagerRouter.get("/", authenticate, async (req, res) => {
+  let test = req.session
+console.log(test);
+console.log("estoy aqui");
   try {
     const { limit } = req.query;
     const { page } = req.query;
@@ -17,11 +20,18 @@ productManagerRouter.get("/", async (req, res) => {
   } catch (error) {}
 });
 
+//middle se aut
+function authenticate(req, res, next) {
+  console.log("middle de auth");
+  console.log(req.session);
+  // return res.status(401).send("Error de autenticación");
+}
+
 //segun el id
 productManagerRouter.get("/:id", async (req, res) => {
   try {
+    console.log(req.session);
     const prodId = req.params.id;
-    const log = console.log(prodId);
     const result = await item.getProductById(prodId);
     return res.send(result);
   } catch (err) {
@@ -87,5 +97,6 @@ productManagerRouter.delete("/:id", async (req, res) => {
     res.status(404).send({ error: `${err}` });
   }
 });
+
 
 export default productManagerRouter;
