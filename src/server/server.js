@@ -25,25 +25,27 @@ app.set('views', __dirname + "/../views");
 
 app.use(express.json());
 app.use(express.static(__dirname + "/../../public"));
-//viewer route
-app.use("/", viewer);
-app.use("/products", viewer);
-app.use("/products/productDetail", viewer);
-app.use("/cart", viewer);
 
-
-//API PACK
 //session
 app.use(session({
     store:MongoStore.create({
         mongoUrl:`mongodb+srv://rrhhmmtt:rafa87@codercluster.tcey2ua.mongodb.net/ecommerse?retryWrites=true&w=majority`,
-        ttl:10
+        ttl:10000
     }),
     secret:"claveDificil",
     resave:true,
     saveUninitialized:true
 }));
-//
+//viewer route
+app.use("/", viewer);
+app.use("/products", viewer);
+app.use("/products/productDetail", viewer);
+app.use("/cart", viewer);
+app.use("/profile", viewer);
+
+
+//API PACK
+//sessions
 app.use("/api/sessions", AuthRouter);
 
 //products route
@@ -60,13 +62,6 @@ app.use((req,res, midSocket) =>{
     midSocket();
 });
 
-//middle se aut
-function authenticate(req, res, next) {
-    if (req.session.user === "user" && req.session.isAdmin) {
-      return next();
-    }
-    return res.status(401).send("Error de autenticación");
-  }
 
 //call de io chat NO FUNCIONO SE DEJA PARA ESTUDIO
 // app.use((req,res,chatSocket) =>{

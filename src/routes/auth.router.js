@@ -12,9 +12,9 @@ AuthRouter.post("/signup", async(req, res)=>{
         if (!user) {
             const newUser = await UserModel.create({email, password});
             req.session.user = newUser.email;
-            req.session.isAdmin = false
+            req.session.rol = "user";
             if (email = "adminCoder@coder.com") {
-                req.session.isAdmin = true
+                req.session.rol = "admin";
                 console.log(req.session);
             }
             //ejemplo a profile en este caso va a products
@@ -36,12 +36,12 @@ AuthRouter.post("/login", async (req,res) => {
         if (email === "adminCoder@coder.com") {
             req.session.user = email;
             req.session.rol = "admin";
-            console.log(req.session.isAdmin);
+            console.log(req.session);
         }else{
             req.session.user = email;
         req.session.rol = "user";
         }
-        return res.send(req.session);
+        return res.redirect("/products");
     }  
     
 })

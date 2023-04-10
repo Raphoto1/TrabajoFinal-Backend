@@ -5,7 +5,7 @@ const productManagerRouter = Router();
 productManagerRouter.use(json());
 const item = new ProductManager();
 
-productManagerRouter.get("/", authenticate, async (req, res) => {
+productManagerRouter.get("/", async (req, res) => {
   let test = req.session
 console.log(test);
 console.log("estoy aqui");
@@ -20,12 +20,6 @@ console.log("estoy aqui");
   } catch (error) {}
 });
 
-//middle se aut
-function authenticate(req, res, next) {
-  console.log("middle de auth");
-  console.log(req.session);
-  // return res.status(401).send("Error de autenticación");
-}
 
 //segun el id
 productManagerRouter.get("/:id", async (req, res) => {
