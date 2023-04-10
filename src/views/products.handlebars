@@ -1,5 +1,10 @@
 <div>
   <h2>Lista de productos directa para el USUARIO: {{userData}}</h2>
+  <div>
+    <form method="post" action="/api/sessions/logout">
+        <button type="submit">logOut</button>
+    </form>
+</div>
   <div id="prodslist">
     <ul>
       {{#each prods.docs}}

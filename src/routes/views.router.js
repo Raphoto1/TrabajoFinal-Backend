@@ -19,7 +19,8 @@ viewer.get("/register",(req,res) =>{
 //profile
 viewer.get("/profile", (req,res) =>{
     console.log(req.session);
-    res.render("profile");
+    const userData= req.session;
+    res.render("profile", {userData});
 })
 //home
 viewer.get("/", async (req,res) =>{

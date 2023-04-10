@@ -52,7 +52,7 @@ AuthRouter.post("/logout", (req,res) =>{
         if (error) {
             return res.send ("no se pudo cerrar la sesion");
         } else {
-            res.redirect("/");
+            return res.redirect("/login");
         }
     });
 });
