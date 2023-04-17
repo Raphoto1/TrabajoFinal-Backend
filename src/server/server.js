@@ -4,7 +4,7 @@ import cartManagerRouter from "../routes/cartManager.router.js";
 import chatManagerRouter from "../routes/chatManager.router.js";
 import ChatManager from "../dao/db-managers/chatManager.js";
 import { AuthRouter } from "../routes/auth.router.js";
-import {initializedPassport} from "./config/passport.config.js"
+import {initializedPassport} from "../config/passport.config.js"
 
 import {__dirname} from "./utils.js";
 import { engine} from "express-handlebars";

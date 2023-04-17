@@ -12,9 +12,8 @@ const initializedPassport = () => {
         usernameField: "email",
         passreqToCallback: true,
       },
-      async (req, username, password, done) => {
+      async ( username, password, done) => {
         try {
-          const { name } = req.body;
           const user = await UserModel.findOne({ email: username });
           if (user) {
             return done(null, false);
@@ -23,7 +22,7 @@ const initializedPassport = () => {
             email: username,
             password: createHash(password),
           };
-          const userCreated = await userModel.create(newUser);
+          const userCreated = await UserModel.create(newUser);
           return done(null, userCreated);
         } catch (error) {
           return done(error);
@@ -37,8 +36,8 @@ const initializedPassport = () => {
     "githubSignup",
     new GithubStrategy(
       {
-        clientID: "github client id",
-        clientSecret: "GITHUB CLIENT SECRET",
+        clientID: "Iv1.a35036a32874003b",
+        clientSecret: "2b51170d0bd759b3301f17ef5f1cf2abf4d6e0cd",
         callbackURL: "http://localhost:8080/api/sessions/github-callback",
       },
       async (accessToken, refreshToken, profile, done) => {
