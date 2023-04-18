@@ -18,8 +18,7 @@ viewer.get("/register",(req,res) =>{
 })
 //profile
 viewer.get("/profile", (req,res) =>{
-    console.log(req.session);
-    const userData= req.session;
+    let userData= req.session;
     res.render("profile", {userData});
 })
 //home
@@ -30,21 +29,21 @@ viewer.get("/", async (req,res) =>{
 })
 //todos los productos
 viewer.get("/products", authenticate, async (req,res) =>{
-    console.log(`esto se ve desde prods${req.session.user}`);
+    console.log(`esto se ve desde prods${req.session.username}`);
     const {page} =req.query;
     const prods = await  productModel.paginate(
         {},{limit: 10, lean:true, page: page??1}
     );
-    const userData = req.session.user;
+    const userData = req.session.username;
     res.render("products", {prods, userData});
 })
 //middle se aut
 async function authenticate(req, res, next) {
-    console.log(`esto se ve desde midd ${req.session.rol}`);
+    console.log(`esto se ve desde midd ${req.session}`);
     if (req.session.rol === "admin") {
         return next();
       }else{
-        res.send("no tienes acceso, esta es un area solo para admin");
+        res.send(`${req.session.username} no tienes acceso, esta es un area solo para admin`);
       }
   }
 

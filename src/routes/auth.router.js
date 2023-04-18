@@ -20,7 +20,10 @@ AuthRouter.get("/failure-signup", (req, res) => {
   res.send("falla en el registro");
 });
 //reg por github
-AuthRouter.get("/github", passport.authenticate("githubSignup"));
+AuthRouter.get("/github", passport.authenticate("githubSignup",{scope:["user:email"]}),
+async (req,res) =>{
+
+});
 //callback de github
 AuthRouter.get(
   "/github-callback",
@@ -28,6 +31,10 @@ AuthRouter.get(
     failureRedirect: "/api/sessions/failure-signup",
   }),
   (req, res) => {
+    req.session.user = req.user;
+    req.session.username = req.session.user.email;
+    req.session.rol = "user"
+    console.log(req.session.user);  
     res.send("usuario autenticado");
   }
 );
@@ -40,12 +47,19 @@ AuthRouter.post("/login", async (req, res) => {
     res.send("ususario no identificado");
   } else {
     if (email === "adminCoder@coder.com") {
-      req.session.user = email;
-      req.session.rol = "admin";
-      console.log(req.session);
+        if (isValidPassword(authorized, password)) {
+            req.session.user = authorized._id;
+            req.session.username = email;
+            req.session.rol = "admin";
+            console.log(req.session.rol);
+            return res.send("login exitoso");
+          } else {
+            res.send("credenciales invalidas");
+          }
     } else {
       if (isValidPassword(authorized, password)) {
         req.session.user = authorized._id;
+        req.session.username = email;
         req.session.rol = "user";
         return res.send("login exitoso");
       } else {
