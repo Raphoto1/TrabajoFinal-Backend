@@ -16,6 +16,7 @@ const initializedPassport = () => {
         try {
           const user = await UserModel.findOne({ email: username });
           if (user) {
+            console.log("puede que ya estes registrado, si la falla persiste comunicate con admin");
             return done(null, false);
           }
           const newUser = {
@@ -23,7 +24,6 @@ const initializedPassport = () => {
             password: createHash(password),
           };
           const userCreated = await UserModel.create(newUser);
-          
           return done(null, userCreated);
         } catch (error) {
           return done(error);
