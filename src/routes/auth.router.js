@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserModel } from "../dao/models/user.model.js";
-import { createHash, isValidPassword } from "../server/utils.js";
+import { createHash, isValidPassword, generateToken, validateToken} from "../server/utils.js";
 import passport from "passport";
 
 const AuthRouter = Router();
@@ -12,6 +12,9 @@ AuthRouter.post(
     failureRedirect: "/api/sessions/failure-signup",
   }),
   (req, res) => {
+    req.session.user = req.user;
+    req.session.username = req.session.user.email;
+    req.session.rol = "user"
     res.send("usuario registrado");
   }
 );

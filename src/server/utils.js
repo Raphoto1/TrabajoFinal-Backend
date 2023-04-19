@@ -22,7 +22,7 @@ const SECRET_KEY = "tokenSecreto";
 
 export const generateToken = (user) =>{
     const token = jwt.sign(user,SECRET_KEY,{
-        expiresIn:"1200s"
+        expiresIn:"24h"
     });
     return token;
 };
@@ -32,4 +32,11 @@ export const validateToken = (req,res,next) => {
     if (!authHeader) {
         return res.sendStatus(401);
     }
+    const token = authHeader.split(" ")[1];
+    if (token == null) return res.sendStatus(401);
+    jwt.verify(token, SECRET_KEY,(err, playload) => {
+        if(err) return res.sendStatus(403);
+        req.user = playload;
+        next();
+    })
 }

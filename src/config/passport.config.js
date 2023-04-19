@@ -23,6 +23,7 @@ const initializedPassport = () => {
             password: createHash(password),
           };
           const userCreated = await UserModel.create(newUser);
+          
           return done(null, userCreated);
         } catch (error) {
           return done(error);

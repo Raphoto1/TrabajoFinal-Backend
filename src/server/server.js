@@ -6,7 +6,7 @@ import ChatManager from "../dao/db-managers/chatManager.js";
 import { AuthRouter } from "../routes/auth.router.js";
 import {initializedPassport} from "../config/passport.config.js"
 
-import {__dirname} from "./utils.js";
+import {__dirname, generateToken, validateToken} from "./utils.js";
 import { engine} from "express-handlebars";
 import { Server } from "socket.io";
 import viewer from "../routes/views.router.js";

@@ -19,6 +19,7 @@ viewer.get("/register",(req,res) =>{
 //profile
 viewer.get("/profile", (req,res) =>{
     let userData= req.session;
+    console.log(userData);
     res.render("profile", {userData});
 })
 //home
